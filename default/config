@@ -1,0 +1,13 @@
+#!/bin/bash
+archi="amd64"
+#archi="i386"
+
+debian_version="wheezy"
+
+dist_name="Amnesia"
+
+iso_name="./Amnesia-Debian-amd64.iso"
+
+boot_default="ram"
+#boot_default=""
+#boot_default="failsafe"
