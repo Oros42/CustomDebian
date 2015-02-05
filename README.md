@@ -5,9 +5,9 @@ Lazy mode / TL;DR
 =================
 
 ```  
-git clone https://github.com/Oros42/CustomDebian.git  
-cd CustomDebian  
-./build_custom_debian.sh new  
+git clone https://github.com/Oros42/CustomDebian.git
+cd CustomDebian
+./build_custom_debian.sh new
 ```
 And get your ISO in ./livework/Amnesia-Debian-amd64.iso
   
@@ -19,9 +19,9 @@ Build your custom Debian
 Setup
 -----
 ```  
-git clone https://github.com/Oros42/CustomDebian.git  
-cd CustomDebian  
-./build_custom_debian.sh  
+git clone https://github.com/Oros42/CustomDebian.git
+cd CustomDebian
+./build_custom_debian.sh
 ```
   
   
