@@ -25,7 +25,7 @@ cd CustomDebian
 ```
   
   
-Custom your Debian
+Customize your Debian
 ------------------
 ```
 CustomDebian
@@ -50,7 +50,7 @@ Let's go to build !
 ```
 sudo ./build_custom_debian.sh new
 ```
-And get your ISO in CustomDebian/livework/?.iso  
+And get your ISO in ./livework/?.iso  
 Estimated time : 20 minutes with a 400 kB/s Internet connection.  
 
   
@@ -79,4 +79,4 @@ And rebuild your live :
 ```
 sudo ./build_custom_debian.sh rebuild
 ```
-And get your new ISO in CustomDebian/livework/?.iso  
+And get your new ISO in ./livework/?.iso  
