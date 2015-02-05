@@ -1,49 +1,66 @@
 # CustomDebian
-script to build your custom live Debian
+Script to build your custom liveCD Debian.
+
+Lazy mode / TL;DR
+=================
+
+```  
+git clone https://github.com/Oros42/CustomDebian.git  
+cd CustomDebian  
+./build_custom_debian.sh new  
+```
+And get your ISO in ./livework/Amnesia-Debian-amd64.iso
+  
+  
+Build your custom Debian
+========================
 
 
 Setup
-=====
+-----
 ```  
 git clone https://github.com/Oros42/CustomDebian.git  
 cd CustomDebian  
 ./build_custom_debian.sh  
 ```
-
-Build your custom Debian
-========================
+  
+  
+Custom your Debian
+------------------
 ```
 CustomDebian
 .
-├── build_custom_debian.sh
+├── build_custom_debian.sh <-- the only file you should run
 ├── config  <-- edit this file
 ├── custom_conf
 │   └── etc <-- put here your customs conf who are copy in /etc/ of your live
-├── default
-│   ├── config
-│   ├── custom_conf
-│   │   └── etc
-│   └── other_files
-│       ├── setup_in_chroot.sh
-│       └── splash.png
+├── custom_setup <-- put here your scripts which will be run in chroot.  
+│   ├── default.sh
+│   └── README.md
+├── default <-- don't touch
 ├── livework <-- it's where ISO is build
 └── other_files
-    ├── setup_in_chroot.sh <-- edit this file and add what you want to setup in your live
+    ├── setup_in_chroot_footer.sh
+    ├── setup_in_chroot_head.sh
     └── splash.png <-- change this picture if you want
 ```
 
-Let's go to build !  
+Let's go to build !
+-------------------
 ```
 sudo ./build_custom_debian.sh new
 ```
 And get your ISO in CustomDebian/livework/?.iso  
+Estimated time : 20 minutes with a 400 kB/s Internet connection.  
+
   
-You want to add something in your live ?  
+  
+You want to add something in your liveCD ?  
 ========================================
 ```
 cd CustomDebian/livework/
 chroot chroot
-# Here, your are in the chroot of your live Debian
+# Here, your are in the chroot of your liveCD Debian
 mount none -t proc /proc
 mount none -t sysfs /sys
 mount none -t devpts /dev/pts

@@ -38,6 +38,10 @@ if [[ ! -d custom_conf && -d default/custom_conf ]]; then
 	cp -r default/custom_conf custom_conf
 fi
 
+if [[ ! -d custom_setup && -d default/custom_setup ]]; then
+	cp -r default/custom_setup custom_setup
+fi
+
 if [[ ! -d other_files && -d default/other_files ]]; then
 	cp -r default/other_files other_files
 fi
@@ -51,6 +55,8 @@ if [ "$EUID" -ne 0 ]; then
 	exit 1
 fi
 
+now=`date +%s`
+
 if [ "$1" == "new" ]; then
 	apt-get update
 	apt-get upgrade -y
@@ -61,8 +67,16 @@ if [ "$1" == "new" ]; then
 	cd ./livework
 	debootstrap --arch=${archi} ${debian_version} chroot
 
-	if [ -f ../other_files/setup_in_chroot.sh ]; then
-		cp ../other_files/setup_in_chroot.sh chroot
+	if [[ -f ../other_files/setup_in_chroot_head.sh && -f ../other_files/setup_in_chroot_footer.sh ]]; then
+		cat ../other_files/setup_in_chroot_head.sh > chroot/setup_in_chroot.sh
+		echo -e "apt-get install -y linux-image-${archi}\napt-get install -y live-boot" >> chroot/setup_in_chroot.sh
+		if [ -d ../custom_setup ]; then
+			for f in ../custom_setup/*.sh; do
+				cat $f >> chroot/setup_in_chroot.sh
+			done
+		fi
+		cat ../other_files/setup_in_chroot_footer.sh >> chroot/setup_in_chroot.sh
+		chmod +x chroot/setup_in_chroot.sh
 		echo -e "\033[31mEnter in chroot\033[0m"
 		chroot chroot /setup_in_chroot.sh
 		echo -e "\033[31mExit chroot\033[0m"
@@ -81,9 +95,11 @@ mkdir -p binary/{live,isolinux}
 cp $(ls chroot/boot/vmlinuz* |sort -n|tail -n1) binary/live/vmlinuz
 #cp chroot/boot/initrd.img-3.2.0-4-${archi} binary/live/initrd
 cp $(ls chroot/boot/initrd* |sort -n|tail -n1) binary/live/initrd
-mksquashfs chroot binary/live/filesystem.squashfs -comp xz -e boot
-cp /usr/lib/syslinux/isolinux.bin binary/isolinux/.
-cp /usr/lib/syslinux/menu.c32 binary/isolinux/.
+#mksquashfs chroot binary/live/filesystem.squashfs -comp xz -e boot
+mksquashfs chroot binary/live/filesystem.squashfs -comp xz
+cp /usr/lib/syslinux/isolinux.bin binary/isolinux/
+cp /usr/lib/syslinux/vesamenu.c32 binary/isolinux/
+cp ../other_files/splash.png binary/isolinux/
 
 echo "default vesamenu.c32
 prompt 0
@@ -140,4 +156,12 @@ endtext
 " >> binary/isolinux/isolinux.cfg
 
 xorriso -as mkisofs -r -J -joliet-long -l -cache-inodes -isohybrid-mbr /usr/lib/syslinux/isohdpfx.bin -partition_offset 16 -A "${dist_name}"  -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o ${iso_name} binary
+
+echo "End"
+date
+last=`date +%s`
+count=$(($last - $now))
+min=$((count/60))
+sec=$((count%60))
+echo "Time : ${min}m ${sec}s"
 echo "ISO build in ./livework/${iso_name}"
