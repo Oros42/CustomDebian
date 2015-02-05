@@ -81,7 +81,7 @@ if [ "$1" == "new" ]; then
 		chroot chroot /setup_in_chroot.sh
 		echo -e "\033[31mExit chroot\033[0m"
 		rm -fr chroot/setup_in_chroot.sh
-		echo "${dist_name}" > /etc/hostname
+		echo "${dist_name}" > chroot/etc/hostname
 		clean_chroot
 	fi
 elif [ "$1" == "rebuild" ]; then
