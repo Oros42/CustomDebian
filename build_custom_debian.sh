@@ -58,10 +58,18 @@ fi
 now=`date +%s`
 
 if [ "$1" == "new" ]; then
-	apt-get update
-	apt-get upgrade -y
-	apt-get install -y xorriso live-build syslinux squashfs-tools
-
+	if [ ! `which xorriso` ]; then
+		apt-get install -y xorriso
+	fi
+	if [ ! `which live-build` ]; then
+		apt-get install -y live-build
+	fi
+	if [ ! `which syslinux` ]; then
+		apt-get install -y syslinux
+	fi
+	if [ ! `which squashfs-tools` ]; then
+		apt-get install -y squashfs-tools
+	fi
 	rm -fr ./livework
 	mkdir -p ./livework
 	cd ./livework
