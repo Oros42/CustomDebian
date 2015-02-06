@@ -77,6 +77,8 @@ if [ "$1" == "new" ]; then
 	
 	if [[ ! -d "chroot" || `ls "chroot"` == "" ]]; then
 		echo -e "\033[31mchroot is empty 0_0!?\033[0m" 1>&2
+		echo "This can happen when you run this script in a encrypted /home/ :-("
+		echo "Try to move CustomDebian in an other folder like /tmp/ and try again."
 		exit 1
 	fi
 
