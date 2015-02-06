@@ -51,7 +51,7 @@ if [ ! "$#" -eq 1 ]; then
 fi
 
 if [ "$EUID" -ne 0 ]; then 
-	echo "$0: ${1:-"Please run as root"}" 1>&2
+	echo -e "\033[31mPlease run as root\033[0m" 1>&2
 	exit 1
 fi
 
@@ -74,6 +74,11 @@ if [ "$1" == "new" ]; then
 	mkdir -p ./livework
 	cd ./livework
 	debootstrap --arch=${archi} ${debian_version} chroot
+	
+	if [[ ! -d "chroot" || `ls "chroot"` == "" ]]; then
+		echo -e "\033[31mchroot is empty 0_0!?\033[0m" 1>&2
+		exit 1
+	fi
 
 	if [[ -f ../other_files/setup_in_chroot_head.sh && -f ../other_files/setup_in_chroot_footer.sh ]]; then
 		cat ../other_files/setup_in_chroot_head.sh > chroot/setup_in_chroot.sh
