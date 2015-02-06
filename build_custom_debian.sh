@@ -100,7 +100,13 @@ if [ "$1" == "new" ]; then
 		clean_chroot
 	fi
 elif [ "$1" == "rebuild" ]; then
-	clean_chroot
+	if [[ -d "livework" && -d "./livework/chroot" ]]; then
+		cd ./livework
+		clean_chroot
+	else
+		echo -e "\033[31m./livework/chroot doesn't exist!\033[0m" 1>&2
+		exit 1
+	fi
 else
 	help
 fi
