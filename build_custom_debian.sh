@@ -67,7 +67,7 @@ if [ "$1" == "new" ]; then
 	if [ ! `which syslinux` ]; then
 		apt-get install -y syslinux
 	fi
-	if [ ! `which squashfs-tools` ]; then
+	if [ ! `which mksquashfs` ]; then
 		apt-get install -y squashfs-tools
 	fi
 	rm -fr ./livework
