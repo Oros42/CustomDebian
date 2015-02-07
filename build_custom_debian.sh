@@ -15,8 +15,8 @@ function help()
 
 function clean_chroot()
 {
-	if [ -d custom_conf ]; then
-		cp -r custom_conf/* chroot/
+	if [ -d ../custom_conf ]; then
+		cp -r ../custom_conf/* chroot/
 	fi
 	rm -fr chroot/root/.bash_history
 	rm -fr chroot/var/log/*
