@@ -34,7 +34,8 @@ CustomDebian
 ├── config  <-- edit this file
 ├── custom_conf
 │   └── etc <-- put here your customs conf who are copy in /etc/ of your live
-├── custom_setup <-- put here your scripts which will be run in chroot.  
+├── custom_setup <-- put here your scripts which will be run in chroot.
+│                    (Examples https://github.com/Oros42/CustomDebianSetup ) 
 │   ├── default.sh
 │   └── README.md
 ├── default <-- don't touch
