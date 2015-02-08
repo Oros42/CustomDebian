@@ -85,7 +85,6 @@ if [ "$1" == "new" ]; then
 	if [[ -f ../other_files/setup_in_chroot_head.sh && -f ../other_files/setup_in_chroot_footer.sh ]]; then
 		cat ../other_files/setup_in_chroot_head.sh > chroot/setup_in_chroot.sh
 		echo -e "apt-get install -y linux-image-${archi}\napt-get install -y live-boot" >> chroot/setup_in_chroot.sh
-		echo -e "/usr/sbin/update-initramfs.orig.initramfs-tools -u" >> chroot/setup_in_chroot.sh
 		if [ -d ../custom_setup ]; then
 			for f in ../custom_setup/*.sh; do
 				cat $f >> chroot/setup_in_chroot.sh
