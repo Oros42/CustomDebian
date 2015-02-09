@@ -10,4 +10,3 @@ apt-get update
 apt-get upgrade -y
 apt-get install -y dialog dbus
 dbus-uuidgen > /var/lib/dbus/machine-id
-cp /usr/sbin/update-initramfs.orig.initramfs-tools /usr/sbin/update-initramfs

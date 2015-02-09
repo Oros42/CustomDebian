@@ -10,6 +10,9 @@ cd CustomDebian
 ./build_custom_debian.sh new
 ```
 And get your ISO in ./livework/Amnesia-Debian-amd64.iso
+Estimated time : 20 minutes with a 400 kB/s Internet connection.  
+Size of ISO : 116 Mo  
+By default, on boot, the whole system is load in RAM. So you need at least 200Mo of RAM. And you can remove the USB key or liveCD after booting.  
   
   
 Build your custom Debian
@@ -53,7 +56,8 @@ sudo ./build_custom_debian.sh new
 ```
 And get your ISO in ./livework/?.iso  
 Estimated time : 20 minutes with a 400 kB/s Internet connection.  
-
+Size of ISO : 116 Mo  
+By default, on boot, the whole system is load in RAM. So you need at least 200Mo of RAM. And you can remove the USB key or liveCD after booting.  
   
   
 You want to add something in your liveCD ?  
