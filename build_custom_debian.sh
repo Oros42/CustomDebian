@@ -114,9 +114,9 @@ fi
 
 mkdir -p binary/{live,isolinux}
 #cp chroot/boot/vmlinuz-3.2.0-4-${archi} binary/live/vmlinuz
-cp $(ls chroot/boot/vmlinuz* |sort -n|tail -n1) binary/live/vmlinuz
+cp $(ls chroot/boot/vmlinuz* |sort --version-sort -f|tail -n1) binary/live/vmlinuz
 #cp chroot/boot/initrd.img-3.2.0-4-${archi} binary/live/initrd
-cp $(ls chroot/boot/initrd* |sort -n|tail -n1) binary/live/initrd
+cp $(ls chroot/boot/initrd* |sort --version-sort -f|tail -n1) binary/live/initrd
 #mksquashfs chroot binary/live/filesystem.squashfs -comp xz -e boot
 mksquashfs chroot binary/live/filesystem.squashfs -comp xz
 cp /usr/lib/syslinux/isolinux.bin binary/isolinux/
