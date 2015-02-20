@@ -7,7 +7,7 @@ Lazy mode / TL;DR
 ```  
 git clone https://github.com/Oros42/CustomDebian.git
 cd CustomDebian
-./build_custom_debian.sh new
+sudo ./build_custom_debian.sh new
 ```
 And get your ISO in ./livework/Amnesia-Debian-amd64.iso
 Estimated time : 20 minutes with a 400 kB/s Internet connection.  
