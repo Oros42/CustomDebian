@@ -2,7 +2,7 @@
 archi="amd64"
 #archi="i386"
 
-debian_version="wheezy"
+debian_version="jessie"
 
 dist_name="Amnesia"
 
