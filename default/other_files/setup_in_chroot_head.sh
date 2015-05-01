@@ -8,5 +8,4 @@ export PS1="\e[01;31m(live):\W \$ \e[00m"
 
 apt-get update
 apt-get upgrade -y
-apt-get install -y dialog dbus
-dbus-uuidgen > /var/lib/dbus/machine-id
+apt-get install -y dialog
