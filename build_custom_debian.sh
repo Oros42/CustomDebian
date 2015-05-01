@@ -119,8 +119,43 @@ cp $(ls chroot/boot/vmlinuz* |sort --version-sort -f|tail -n1) binary/live/vmlin
 cp $(ls chroot/boot/initrd* |sort --version-sort -f|tail -n1) binary/live/initrd
 #mksquashfs chroot binary/live/filesystem.squashfs -comp xz -e boot
 mksquashfs chroot binary/live/filesystem.squashfs -comp xz
-cp /usr/lib/syslinux/isolinux.bin binary/isolinux/
-cp /usr/lib/syslinux/vesamenu.c32 binary/isolinux/
+
+isohdpfx_path=/usr/lib/syslinux/isohdpfx.bin
+if [ -f /usr/lib/syslinux/isolinux.bin ]; then
+	cp /usr/lib/syslinux/isolinux.bin binary/isolinux/
+elif [ -f /usr/lib/ISOLINUX/isolinux.bin ]; then
+	cp /usr/lib/ISOLINUX/isolinux.bin binary/isolinux/
+	isohdpfx_path=/usr/lib/ISOLINUX/isohdpfx.bin
+else
+	if [ ! `which isolinux` ]; then
+		apt-get install -y isolinux
+		if [ -f /usr/lib/ISOLINUX/isolinux.bin ]; then
+			cp /usr/lib/ISOLINUX/isolinux.bin binary/isolinux/
+			isohdpfx_path=/usr/lib/ISOLINUX/isohdpfx.bin
+		else
+			echo -e "\033[31m/usr/lib/syslinux/isolinux.bin or /usr/lib/ISOLINUX/isolinux.bin not found!\033[0m" 1>&2
+			exit 1		
+		fi
+	else
+		echo -e "\033[31m/usr/lib/syslinux/isolinux.bin or /usr/lib/ISOLINUX/isolinux.bin not found!\033[0m" 1>&2
+		exit 1	
+	fi
+fi
+
+if [ ! -f $isohdpfx_path ]; then
+	echo -e "\033[31m${isohdpfx_path} not found!\033[0m" 1>&2
+	exit 1
+fi
+
+if [ -f /usr/lib/syslinux/vesamenu.c32 ]; then
+	cp /usr/lib/syslinux/vesamenu.c32 binary/isolinux/
+elif [ -f /usr/lib/syslinux/modules/bios/vesamenu.c32 ]; then
+	cp /usr/lib/syslinux/modules/bios/vesamenu.c32 binary/isolinux/
+else
+	echo -e "\033[31m/usr/lib/syslinux/vesamenu.c32 or /usr/lib/syslinux/modules/bios/vesamenu.c32 not found!\033[0m" 1>&2
+	exit 1
+fi
+
 cp ../other_files/splash.png binary/isolinux/
 
 echo "default vesamenu.c32
@@ -177,7 +212,7 @@ echo "	linux /live/vmlinuz
 endtext
 " >> binary/isolinux/isolinux.cfg
 
-xorriso -as mkisofs -r -J -joliet-long -l -cache-inodes -isohybrid-mbr /usr/lib/syslinux/isohdpfx.bin -partition_offset 16 -A "${dist_name}"  -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o ${iso_name} binary
+xorriso -as mkisofs -r -J -joliet-long -l -cache-inodes -isohybrid-mbr $isohdpfx_path -partition_offset 16 -A "${dist_name}"  -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o ${iso_name} binary
 
 echo "End"
 date
@@ -186,4 +221,9 @@ count=$(($last - $now))
 min=$((count/60))
 sec=$((count%60))
 echo "Time : ${min}m ${sec}s"
-echo "ISO build in ./livework/${iso_name}"
+if [ -f ${iso_name} ] ; then
+	echo "ISO build in ./livework/${iso_name}"
+else
+	echo -e "\033[31mError, ./livework/${iso_name} not build :-(\033[0m" 1>&2
+	exit 1
+fi
