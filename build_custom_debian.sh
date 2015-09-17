@@ -15,14 +15,16 @@ function help()
 
 function clean_chroot()
 {
-	if [ -d ../custom_conf ]; then
-		cp -r ../custom_conf/* chroot/
+	if [ -d $initpath/custom_conf ]; then
+		cp -r $initpath/custom_conf/* chroot/
 	fi
 	rm -fr chroot/root/.bash_history
 	rm -fr chroot/var/log/*
 	rm -fr chroot/var/cache/apt/archives/*
 	rm -fr chroot/tmp/*
 }
+
+initpath=`pwd`
 
 if [ ! -f config ]; then
 	if [ -f default/config ]; then
@@ -82,16 +84,16 @@ if [ "$1" == "new" ]; then
 		exit 1
 	fi
 
-	if [[ -f ../other_files/setup_in_chroot_head.sh && -f ../other_files/setup_in_chroot_footer.sh ]]; then
-		cat ../other_files/setup_in_chroot_head.sh > chroot/setup_in_chroot.sh
+	if [[ -f $initpath/other_files/setup_in_chroot_head.sh && -f $initpath/other_files/setup_in_chroot_footer.sh ]]; then
+		cat $initpath/other_files/setup_in_chroot_head.sh > chroot/setup_in_chroot.sh
 		echo -e "apt-get install -y linux-image-${archi}\napt-get install -y live-boot" >> chroot/setup_in_chroot.sh
 		echo -e "cp /usr/sbin/update-initramfs.orig.initramfs-tools /usr/sbin/update-initramfs\nupdate-initramfs -u" >> chroot/setup_in_chroot.sh
-		if [ -d ../custom_setup ]; then
-			for f in ../custom_setup/*.sh; do
+		if [ -d $initpath/custom_setup ]; then
+			for f in $initpath/custom_setup/*.sh; do
 				cat $f >> chroot/setup_in_chroot.sh
 			done
 		fi
-		cat ../other_files/setup_in_chroot_footer.sh >> chroot/setup_in_chroot.sh
+		cat $initpath/other_files/setup_in_chroot_footer.sh >> chroot/setup_in_chroot.sh
 		chmod +x chroot/setup_in_chroot.sh
 		echo -e "\033[31mEnter in chroot\033[0m"
 		chroot chroot /setup_in_chroot.sh
@@ -156,7 +158,7 @@ else
 	exit 1
 fi
 
-cp ../other_files/splash.png binary/isolinux/
+cp $initpath/other_files/splash.png binary/isolinux/
 
 echo "default vesamenu.c32
 prompt 0
