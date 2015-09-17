@@ -13,3 +13,5 @@ boot_default="ram"
 #boot_default="failsafe"
 
 livework="./livework"
+
+mirror="http://ftp.us.debian.org/debian"

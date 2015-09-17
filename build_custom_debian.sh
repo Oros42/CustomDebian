@@ -75,7 +75,7 @@ if [ "$1" == "new" ]; then
 	rm -fr $livework
 	mkdir -p $livework
 	cd $livework
-	debootstrap --arch=${archi} ${debian_version} chroot
+	debootstrap --arch=${archi} ${debian_version} chroot $mirror
 	
 	if [[ ! -d "chroot" || `ls "chroot"` == "" ]]; then
 		echo -e "\033[31mchroot is empty 0_0!?\033[0m" 1>&2
