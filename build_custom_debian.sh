@@ -7,8 +7,8 @@ function help()
 {
 	echo "Build a custom live Debian."
 	echo "$0 [new|rebuild]"
-	echo -e " new     : remove ./livework if exist and build a new live"
-	echo -e " rebuild : keep ./livework, clean chroot and build a new live"
+	echo -e " new     : remove $livework if exist and build a new live"
+	echo -e " rebuild : keep $livework, clean chroot and build a new live"
 	echo -e "\n$0 should be run as root"
 	exit 0
 }
@@ -70,9 +70,9 @@ if [ "$1" == "new" ]; then
 	if [ ! `which mksquashfs` ]; then
 		apt-get install -y squashfs-tools
 	fi
-	rm -fr ./livework
-	mkdir -p ./livework
-	cd ./livework
+	rm -fr $livework
+	mkdir -p $livework
+	cd $livework
 	debootstrap --arch=${archi} ${debian_version} chroot
 	
 	if [[ ! -d "chroot" || `ls "chroot"` == "" ]]; then
@@ -101,11 +101,11 @@ if [ "$1" == "new" ]; then
 		clean_chroot
 	fi
 elif [ "$1" == "rebuild" ]; then
-	if [[ -d "livework" && -d "./livework/chroot" ]]; then
-		cd ./livework
+	if [[ -d "livework" && -d "$livework/chroot" ]]; then
+		cd $livework
 		clean_chroot
 	else
-		echo -e "\033[31m./livework/chroot doesn't exist!\033[0m" 1>&2
+		echo -e "\033[31m$livework/chroot doesn't exist!\033[0m" 1>&2
 		exit 1
 	fi
 else
@@ -222,8 +222,8 @@ min=$((count/60))
 sec=$((count%60))
 echo "Time : ${min}m ${sec}s"
 if [ -f ${iso_name} ] ; then
-	echo "ISO build in ./livework/${iso_name}"
+	echo "ISO build in $livework/${iso_name}"
 else
-	echo -e "\033[31mError, ./livework/${iso_name} not build :-(\033[0m" 1>&2
+	echo -e "\033[31mError, $livework/${iso_name} not build :-(\033[0m" 1>&2
 	exit 1
 fi

@@ -11,3 +11,5 @@ iso_name="Amnesia-Debian8-amd64.iso"
 boot_default="ram"
 #boot_default=""
 #boot_default="failsafe"
+
+livework="./livework"
