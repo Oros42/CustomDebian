@@ -48,6 +48,25 @@ if [[ ! -d other_files && -d default/other_files ]]; then
 	cp -r default/other_files other_files
 fi
 
+if [[ ! -d syslinux || ! -f syslinux/ldlinux.c32 ]]; then
+	echo "Downloading syslinux..."
+	wget https://www.kernel.org/pub/linux/utils/boot/syslinux/syslinux-6.03.tar.gz
+	tar xzf syslinux-*.tar.gz
+	rm syslinux-*.tar.gz
+	mkdir -p syslinux
+	# if you have efi, change bios to efi64 or efi32
+	cp syslinux-*/bios/com32/elflink/ldlinux/ldlinux.c32 syslinux
+	cp syslinux-*/bios/com32/hdt/hdt.c32 syslinux
+	cp syslinux-*/bios/com32/lib/libcom32.c32 syslinux
+	cp syslinux-*/bios/com32/libutil/libutil.c32 syslinux
+	cp syslinux-*/bios/core/isolinux.bin syslinux
+	cp syslinux-*/bios/mbr/isohdpfx.bin syslinux
+	cp syslinux-*/bios/com32/menu/vesamenu.c32 syslinux
+	chmod 666 syslinux/*
+	rm -r syslinux-*
+	echo "syslinux ok"
+fi
+
 if [ ! "$#" -eq 1 ]; then
 	help
 fi
@@ -65,9 +84,6 @@ if [ "$1" == "new" ]; then
 	fi
 	if [ ! `which live-build` ]; then
 		apt-get install -y live-build
-	fi
-	if [ ! `which syslinux` ]; then
-		apt-get install -y syslinux
 	fi
 	if [ ! `which mksquashfs` ]; then
 		apt-get install -y squashfs-tools
@@ -103,7 +119,7 @@ if [ "$1" == "new" ]; then
 		clean_chroot
 	fi
 elif [ "$1" == "rebuild" ]; then
-	if [[ -d "livework" && -d "$livework/chroot" ]]; then
+	if [[ -d "$livework" && -d "$livework/chroot" ]]; then
 		cd $livework
 		clean_chroot
 	else
@@ -122,41 +138,8 @@ cp $(ls chroot/boot/initrd* |sort --version-sort -f|tail -n1) binary/live/initrd
 #mksquashfs chroot binary/live/filesystem.squashfs -comp xz -e boot
 mksquashfs chroot binary/live/filesystem.squashfs -comp xz
 
-isohdpfx_path=/usr/lib/syslinux/isohdpfx.bin
-if [ -f /usr/lib/syslinux/isolinux.bin ]; then
-	cp /usr/lib/syslinux/isolinux.bin binary/isolinux/
-elif [ -f /usr/lib/ISOLINUX/isolinux.bin ]; then
-	cp /usr/lib/ISOLINUX/isolinux.bin binary/isolinux/
-	isohdpfx_path=/usr/lib/ISOLINUX/isohdpfx.bin
-else
-	if [ ! `which isolinux` ]; then
-		apt-get install -y isolinux
-		if [ -f /usr/lib/ISOLINUX/isolinux.bin ]; then
-			cp /usr/lib/ISOLINUX/isolinux.bin binary/isolinux/
-			isohdpfx_path=/usr/lib/ISOLINUX/isohdpfx.bin
-		else
-			echo -e "\033[31m/usr/lib/syslinux/isolinux.bin or /usr/lib/ISOLINUX/isolinux.bin not found!\033[0m" 1>&2
-			exit 1		
-		fi
-	else
-		echo -e "\033[31m/usr/lib/syslinux/isolinux.bin or /usr/lib/ISOLINUX/isolinux.bin not found!\033[0m" 1>&2
-		exit 1	
-	fi
-fi
-
-if [ ! -f $isohdpfx_path ]; then
-	echo -e "\033[31m${isohdpfx_path} not found!\033[0m" 1>&2
-	exit 1
-fi
-
-if [ -f /usr/lib/syslinux/vesamenu.c32 ]; then
-	cp /usr/lib/syslinux/vesamenu.c32 binary/isolinux/
-elif [ -f /usr/lib/syslinux/modules/bios/vesamenu.c32 ]; then
-	cp /usr/lib/syslinux/modules/bios/vesamenu.c32 binary/isolinux/
-else
-	echo -e "\033[31m/usr/lib/syslinux/vesamenu.c32 or /usr/lib/syslinux/modules/bios/vesamenu.c32 not found!\033[0m" 1>&2
-	exit 1
-fi
+cp $initpath/syslinux/*.c32 binary/isolinux
+cp $initpath/syslinux/*.bin binary/isolinux
 
 cp $initpath/other_files/splash.png binary/isolinux/
 
@@ -214,7 +197,7 @@ echo "	linux /live/vmlinuz
 endtext
 " >> binary/isolinux/isolinux.cfg
 
-xorriso -as mkisofs -r -J -joliet-long -l -cache-inodes -isohybrid-mbr $isohdpfx_path -partition_offset 16 -A "${dist_name}"  -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o ${iso_name} binary
+xorriso -as mkisofs -r -J -joliet-long -l -cache-inodes -isohybrid-mbr $initpath/syslinux/isohdpfx.bin -partition_offset 16 -A "${dist_name}"  -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o ${iso_name} binary
 
 echo "End"
 date
