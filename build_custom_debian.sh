@@ -131,6 +131,7 @@ else
 fi
 
 mkdir -p binary/{live,isolinux}
+rm -f binary/live/filesystem.squashfs
 #cp chroot/boot/vmlinuz-3.2.0-4-${archi} binary/live/vmlinuz
 cp $(ls chroot/boot/vmlinuz* |sort --version-sort -f|tail -n1) binary/live/vmlinuz
 #cp chroot/boot/initrd.img-3.2.0-4-${archi} binary/live/initrd
