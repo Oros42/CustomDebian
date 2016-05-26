@@ -14,4 +14,6 @@ boot_default="ram"
 
 livework="./livework"
 
-mirror="http://ftp.us.debian.org/debian"
+
+mirror="http://ftp.us.debian.org/debian" # use by debootstrap
+sources_list="deb $mirror ${debian_version} main" # if not empty, replace /etc/apt/sources.list by this content

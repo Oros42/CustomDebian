@@ -109,6 +109,9 @@ if [ "$1" == "new" ]; then
 				cat $f >> chroot/setup_in_chroot.sh
 			done
 		fi
+		if [ "${sources_list}" != "" ]; then
+			echo "${sources_list}" > chroot/etc/apt/sources.list
+		fi
 		cat $initpath/other_files/setup_in_chroot_footer.sh >> chroot/setup_in_chroot.sh
 		chmod +x chroot/setup_in_chroot.sh
 		echo -e "\033[31mEnter in chroot\033[0m"
