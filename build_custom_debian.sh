@@ -114,19 +114,30 @@ if [ "$1" == "new" ]; then
 		echo -e "\033[31mEnter in chroot\033[0m"
 		chroot chroot /setup_in_chroot.sh
 		echo -e "\033[31mExit chroot\033[0m"
+		chroot_path="$(pwd)/chroot"
+		have_kill=0
+		# kill process in chroot
 		for p in /proc/*/root; do
 			rlink=$(readlink $p)
-			if [ "$rlink" == "$livework/chroot" ]; then
+			if [ "$rlink" == "$chroot_path" ]; then
 				pid=$(basename $(dirname "$p"))
-				echo "Kill in chroot : $(ps -p 451 -o pid,comm|tail -1)"
+				echo "Kill -15 in chroot : $(ps -p $pid -o pid,comm|tail -1)"
 				kill -15 "$pid"
-				if [ -d "$p" ]; then
-					# if kill -15 failed
-					echo "Use kill -9 :-/"
-					kill -9 "$pid"
-				fi
+				have_kill=1
 			fi
 		done
+		if [ $have_kill -eq 1 ]; then
+			# check if process survive to a kill -15
+			sleep 3s
+			for p in /proc/*/root; do
+				rlink=$(readlink $p)
+				if [ "$rlink" == "$chroot_path" ]; then
+					pid=$(basename $(dirname "$p"))
+					echo "Kill -9 in chroot : $(ps -p $pid -o pid,comm|tail -1)"
+					kill -9 "$pid"
+				fi
+			done
+		fi
 		umount -f chroot/proc chroot/sys chroot/dev/pts
 		rm -fr chroot/setup_in_chroot.sh
 		echo "${dist_name}" > chroot/etc/hostname
