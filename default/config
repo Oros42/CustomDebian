@@ -2,11 +2,11 @@
 archi="amd64"
 #archi="i386"
 
-debian_version="jessie"
+debian_version="stretch"
 
 dist_name="Amnesia"
 
-iso_name="Amnesia-Debian8-amd64.iso"
+iso_name="Amnesia-Debian9-amd64.iso"
 
 boot_default="ram"
 #boot_default=""
